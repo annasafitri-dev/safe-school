@@ -1,23 +1,28 @@
 import { Controller, Post, Body, Get } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Report } from './report.entity';
 
 @Controller()
 export class AppController {
-  private reports: any[] = [];
+  constructor(
+    @InjectRepository(Report)
+    private reportRepo: Repository<Report>,
+  ) {}
 
   @Post('reports')
-  createReport(@Body() body: any) {
-    this.reports.push(body);
+  async createReport(@Body() body: any) {
+    const report = this.reportRepo.create(body);
+    await this.reportRepo.save(report);
 
     return {
-      message: 'Laporan berhasil disimpan',
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      data: body,
+      message: 'Laporan berhasil disimpan ke database',
+      data: report,
     };
   }
 
   @Get('reports')
-  getReports() {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return this.reports;
+  async getReports() {
+    return this.reportRepo.find();
   }
 }
