@@ -1,12 +1,23 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Post, Body, Get } from '@nestjs/common';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  private reports: any[] = [];
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Post('reports')
+  createReport(@Body() body: any) {
+    this.reports.push(body);
+
+    return {
+      message: 'Laporan berhasil disimpan',
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      data: body,
+    };
+  }
+
+  @Get('reports')
+  getReports() {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return this.reports;
   }
 }
