@@ -14,5 +14,6 @@ import { Report } from './report.entity';
     TypeOrmModule.forFeature([Report]),
   ],
   controllers: [AppController],
+  providers: [],
 })
 export class AppModule {}

@@ -4,11 +4,31 @@ import { useEffect, useState } from 'react';
 export default function AdminPage() {
   const [reports, setReports] = useState<any[]>([]);
 
+  // 🔥 FIX: function HARUS di atas
+  const deleteReport = async (id: number) => {
+    try {
+      const res = await fetch(`http://127.0.0.1:3000/reports/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!res.ok) {
+        alert('Gagal hapus');
+        return;
+      }
+
+      // update UI setelah hapus
+      setReports((prev) => prev.filter((r) => r.id !== id));
+    } catch (err) {
+      console.error(err);
+      alert('Error hapus');
+    }
+  };
+
+  // ambil data
   useEffect(() => {
     fetch('http://127.0.0.1:3000/reports')
       .then((res) => res.json())
       .then((data) => {
-        console.log("DATA:", data);
         setReports(data);
       });
   }, []);
@@ -31,6 +51,10 @@ export default function AdminPage() {
           >
             <p><b>Nama:</b> {r.nama}</p>
             <p><b>Laporan:</b> {r.laporan}</p>
+
+            <button onClick={() => deleteReport(r.id)}>
+              Hapus
+            </button>
           </div>
         ))
       )}
