@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
 export class Report {
@@ -10,4 +10,7 @@ export class Report {
 
   @Column()
   laporan: string;
+
+  @Column({ default: 'pending' })
+  status: string;
 }

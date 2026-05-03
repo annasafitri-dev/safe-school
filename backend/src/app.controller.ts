@@ -2,6 +2,7 @@ import { Controller, Post, Body, Get, Delete, Param } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Report } from './report.entity';
+import { Patch } from '@nestjs/common';
 
 @Controller('reports')
 export class AppController {
@@ -30,5 +31,16 @@ export class AppController {
   async deleteReport(@Param('id') id: number) {
     await this.reportRepo.delete(id);
     return { message: 'Laporan dihapus' };
+  }
+
+  @Patch(':id')
+  async updateStatus(@Param('id') id: number) {
+    const report = await this.reportRepo.findOneBy({ id });
+
+    report.status = report.status === 'pending' ? 'selesai' : 'pending';
+
+    await this.reportRepo.save(report);
+
+    return report;
   }
 }
