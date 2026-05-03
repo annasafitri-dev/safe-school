@@ -41,31 +41,30 @@ export default function Home() {
   return (
     <div style={container}>
       <div style={card}>
-        <h1 style={{ textAlign: 'center' }}> Safe School</h1>
+        <h1 style={{ textAlign: 'center' }}>Safe School</h1>
 
         <form onSubmit={handleSubmit}>
           <input
             placeholder="Nama (boleh anonim)"
             value={nama}
             onChange={(e) => setNama(e.target.value)}
-            style={input}
+            style={oninput}
           />
 
           <input
             placeholder="Nama Pelaku"
             value={pelaku}
             onChange={(e) => setPelaku(e.target.value)}
-            style={input}
+            style={oninput}
           />
 
           <textarea
             placeholder="Ceritakan kejadian..."
             value={laporan}
             onChange={(e) => setLaporan(e.target.value)}
-            style={{ ...input, height: 100 }}
+            style={{ ...oninput, height: 100 }}
           />
 
-          {/* 📸 Upload */}
           <input
             type="file"
             onChange={(e) => setBukti(e.target.files?.[0] || null)}
@@ -73,43 +72,10 @@ export default function Home() {
           />
 
           <button type="submit" disabled={loading} style={button}>
-            {loading ? 'Mengirim...' : ' Kirim Laporan'}
+            {loading ? 'Mengirim...' : 'Kirim Laporan'}
           </button>
         </form>
       </div>
     </div>
   );
 }
-
-const container = {
-  minHeight: '100vh',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  background: 'linear-gradient(135deg, #667eea, #764ba2)',
-};
-
-const card = {
-  background: 'white',
-  padding: 25,
-  borderRadius: 12,
-  width: 400,
-};
-
-const input = {
-  width: '100%',
-  padding: 10,
-  marginTop: 10,
-  borderRadius: 8,
-  border: '1px solid #ccc',
-};
-
-const button = {
-  width: '100%',
-  marginTop: 15,
-  padding: 10,
-  backgroundColor: '#007bff',
-  color: 'white',
-  border: 'none',
-  borderRadius: 8,
-};
