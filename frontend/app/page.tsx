@@ -3,7 +3,9 @@ import { useState } from 'react';
 
 export default function Home() {
   const [nama, setNama] = useState('');
+  const [pelaku, setPelaku] = useState('');
   const [laporan, setLaporan] = useState('');
+  const [bukti, setBukti] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: any) => {
@@ -11,17 +13,24 @@ export default function Home() {
     setLoading(true);
 
     try {
+      const formData = new FormData();
+      formData.append('nama', nama);
+      formData.append('pelaku', pelaku);
+      formData.append('laporan', laporan);
+      if (bukti) formData.append('bukti', bukti);
+
       const res = await fetch('http://127.0.0.1:3000/reports', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nama, laporan }),
+        body: formData,
       });
 
       if (!res.ok) throw new Error();
 
       alert('✅ Laporan berhasil dikirim!');
       setNama('');
+      setPelaku('');
       setLaporan('');
+      setBukti(null);
     } catch {
       alert('❌ Gagal kirim laporan');
     } finally {
@@ -30,76 +39,41 @@ export default function Home() {
   };
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, #667eea, #764ba2)',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontFamily: 'sans-serif',
-      }}
-    >
-      <div
-        style={{
-          width: 420,
-          padding: 30,
-          borderRadius: 16,
-          background: 'rgba(255, 255, 255, 0.15)',
-          backdropFilter: 'blur(10px)',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
-          color: 'white',
-        }}
-      >
-        <h1 style={{ textAlign: 'center', marginBottom: 10 }}>
-          🛡️ Safe School
-        </h1>
-
-        <p
-          style={{
-            textAlign: 'center',
-            fontSize: 14,
-            opacity: 0.8,
-            marginBottom: 20,
-          }}
-        >
-          Laporkan bullying secara aman & anonim
-        </p>
+    <div style={container}>
+      <div style={card}>
+        <h1 style={{ textAlign: 'center' }}> Safe School</h1>
 
         <form onSubmit={handleSubmit}>
           <input
             placeholder="Nama (boleh anonim)"
             value={nama}
             onChange={(e) => setNama(e.target.value)}
-            style={inputStyle}
+            style={input}
+          />
+
+          <input
+            placeholder="Nama Pelaku"
+            value={pelaku}
+            onChange={(e) => setPelaku(e.target.value)}
+            style={input}
           />
 
           <textarea
             placeholder="Ceritakan kejadian..."
             value={laporan}
             onChange={(e) => setLaporan(e.target.value)}
-            style={{ ...inputStyle, height: 100 }}
+            style={{ ...input, height: 100 }}
           />
 
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              width: '100%',
-              marginTop: 15,
-              padding: 12,
-              borderRadius: 10,
-              border: 'none',
-              background: loading
-                ? '#999'
-                : 'linear-gradient(135deg, #ff7e5f, #feb47b)',
-              color: 'white',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              transition: '0.3s',
-            }}
-          >
-            {loading ? 'Mengirim...' : '🚀 Kirim Laporan'}
+          {/* 📸 Upload */}
+          <input
+            type="file"
+            onChange={(e) => setBukti(e.target.files?.[0] || null)}
+            style={{ marginTop: 10 }}
+          />
+
+          <button type="submit" disabled={loading} style={button}>
+            {loading ? 'Mengirim...' : ' Kirim Laporan'}
           </button>
         </form>
       </div>
@@ -107,12 +81,35 @@ export default function Home() {
   );
 }
 
-const inputStyle = {
+const container = {
+  minHeight: '100vh',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  background: 'linear-gradient(135deg, #667eea, #764ba2)',
+};
+
+const card = {
+  background: 'white',
+  padding: 25,
+  borderRadius: 12,
+  width: 400,
+};
+
+const input = {
   width: '100%',
-  padding: 12,
+  padding: 10,
   marginTop: 10,
-  borderRadius: 10,
+  borderRadius: 8,
+  border: '1px solid #ccc',
+};
+
+const button = {
+  width: '100%',
+  marginTop: 15,
+  padding: 10,
+  backgroundColor: '#007bff',
+  color: 'white',
   border: 'none',
-  outline: 'none',
-  fontSize: 14,
+  borderRadius: 8,
 };

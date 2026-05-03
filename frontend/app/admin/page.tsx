@@ -41,83 +41,85 @@ export default function AdminPage() {
     }
   };
 
-  // GET DATA
+  // GET DATA (🔥 FIX DI SINI)
   useEffect(() => {
     fetch('http://127.0.0.1:3000/reports')
       .then((res) => res.json())
       .then((data) => {
-        setReports(data);
+        // 🔥 HANDLE kalau bukan array
+        setReports(Array.isArray(data) ? data : data.data || []);
       });
   }, []);
 
-    return (
+  return (
     <div style={{ padding: 20 }}>
-        <h1>Dashboard Laporan</h1>
+      <h1>Dashboard Laporan</h1>
 
-        {reports.length === 0 ? (
+      {reports.length === 0 ? (
         <p>Belum ada laporan</p>
-        ) : (
+      ) : (
         reports.map((r) => (
-            <div
+          <div
             key={r.id}
             style={{
-                border: '1px solid #ccc',
-                borderRadius: 10,
-                marginBottom: 15,
-                padding: 15,
-                backgroundColor: '#f9f9f9',
+              border: '1px solid #ccc',
+              borderRadius: 10,
+              marginBottom: 15,
+              padding: 15,
+              backgroundColor: '#f9f9f9',
             }}
-            >
+          >
             <p><b>Nama:</b> {r.nama}</p>
+            <p><b>Pelaku:</b> {r.pelaku || '-'}</p>
             <p><b>Laporan:</b> {r.laporan}</p>
 
-            {/* STATUS WARNA */}
+            {/* STATUS */}
             <p>
-                <b>Status:</b>{' '}
-                <span
+              <b>Status:</b>{' '}
+              <span
                 style={{
-                    color: r.status === 'pending' ? 'orange' : 'green',
-                    fontWeight: 'bold',
+                  color: r.status === 'pending' ? 'orange' : 'green',
+                  fontWeight: 'bold',
                 }}
-                >
+              >
                 {r.status}
-                </span>
+              </span>
             </p>
 
-            {/* BUTTON RAPI */}
+            {/* BUTTON */}
             <div style={{ marginTop: 10 }}>
-                <button
+              <button
                 onClick={() => updateStatus(r.id)}
                 style={{
-                    marginRight: 10,
-                    padding: '5px 10px',
-                    backgroundColor: '#007bff',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: 5,
-                    cursor: 'pointer',
+                  marginRight: 10,
+                  padding: '5px 10px',
+                  backgroundColor: '#007bff',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: 5,
+                  cursor: 'pointer',
                 }}
-                >
+              >
                 Ubah Status
-                </button>
+              </button>
 
-                <button
+              <button
                 onClick={() => deleteReport(r.id)}
                 style={{
-                    padding: '5px 10px',
-                    backgroundColor: 'red',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: 5,
-                    cursor: 'pointer',
+                  padding: '5px 10px',
+                  backgroundColor: 'red',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: 5,
+                  cursor: 'pointer',
                 }}
-                >
+              >
                 Hapus
-                </button>
+              </button>
             </div>
-            </div>
+          </div>
         ))
-        )}
+      )}
     </div>
-    );
+  );
 }

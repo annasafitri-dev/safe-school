@@ -9,11 +9,10 @@ import { Report } from './report.entity';
       type: 'sqlite',
       database: 'db.sqlite',
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: false, // 🔥 WAJIB FALSE (biar data tidak hilang lagi)
     }),
     TypeOrmModule.forFeature([Report]),
   ],
   controllers: [AppController],
-  providers: [],
 })
 export class AppModule {}
