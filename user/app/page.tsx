@@ -1,82 +1,28 @@
 'use client';
-import { useState } from 'react';
+
+import Link from 'next/link';
 
 export default function Home() {
-  const [nama, setNama] = useState('');
-  const [pelaku, setPelaku] = useState('');
-  const [laporan, setLaporan] = useState('');
-  const [bukti, setBukti] = useState<File | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      const formData = new FormData();
-      formData.append('nama', nama);
-      formData.append('pelaku', pelaku);
-      formData.append('laporan', laporan);
-      if (bukti) formData.append('bukti', bukti);
-
-      const res = await fetch('http://127.0.0.1:3000/reports', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!res.ok) throw new Error();
-
-      alert('✅ Laporan berhasil dikirim!');
-      setNama('');
-      setPelaku('');
-      setLaporan('');
-      setBukti(null);
-    } catch (err) {
-      console.error(err);
-      alert('❌ Gagal kirim laporan');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div style={container}>
-      <div style={card}>
-        <h1 style={{ textAlign: 'center' }}>🛡️ Safe School</h1>
-        <p style={subtitle}>Laporkan bullying secara aman & anonim</p>
+      <div style={content}>
+        
+        <h1 style={title}>AduinAja!</h1>
 
-        <form onSubmit={handleSubmit}>
-          <input
-            placeholder="Nama (boleh anonim)"
-            value={nama}
-            onChange={(e) => setNama(e.target.value)}
-            style={input}
-          />
+        <p style={subtitle}>
+          Platform pengaduan masyarakat untuk menyampaikan laporan secara cepat, aman, dan terstruktur.
+        </p>
 
-          <input
-            placeholder="Nama Pelaku"
-            value={pelaku}
-            onChange={(e) => setPelaku(e.target.value)}
-            style={input}
-          />
+        <div style={buttonContainer}>
+          <Link href="/lapor">
+            <button style={buttonPrimary}>Buat Laporan</button>
+          </Link>
 
-          <textarea
-            placeholder="Ceritakan kejadian..."
-            value={laporan}
-            onChange={(e) => setLaporan(e.target.value)}
-            style={{ ...input, height: 100 }}
-          />
+          <Link href="/login">
+            <button style={buttonSecondary}>Login Admin</button>
+          </Link>
+        </div>
 
-          <input
-            type="file"
-            onChange={(e) => setBukti(e.target.files?.[0] || null)}
-            style={{ marginTop: 10 }}
-          />
-
-          <button type="submit" disabled={loading} style={button}>
-            {loading ? 'Mengirim...' : '🚀 Kirim Laporan'}
-          </button>
-        </form>
       </div>
     </div>
   );
@@ -87,38 +33,58 @@ const container = {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  background: 'linear-gradient(135deg, #667eea, #764ba2)',
+  background: 'linear-gradient(135deg, #4facfe, #00c6ff)',
 };
 
-const card = {
-  background: 'white',
-  padding: 25,
-  borderRadius: 12,
-  width: 400,
+const content = {
+  textAlign: 'center' as const,
+  maxWidth: 700, // 🔥 lebih lebar
+  padding: 20,
+  color: 'white',
+};
+
+const title = {
+  fontSize: 42, // 🔥 lebih besar
+  fontWeight: 'bold',
+  marginBottom: 10,
 };
 
 const subtitle = {
-  textAlign: 'center' as const,
-  fontSize: 14,
-  marginBottom: 15,
-  color: '#666',
+  fontSize: 18,
+  marginBottom: 30,
+  lineHeight: 1.6,
 };
 
-const input = {
-  width: '100%',
-  padding: 10,
-  marginTop: 10,
-  borderRadius: 8,
-  border: '1px solid #ccc',
+const buttonContainer = {
+  display: 'flex',
+  justifyContent: 'center',
+  gap: 15,
+  marginBottom: 40,
 };
 
-const button = {
-  width: '100%',
-  marginTop: 15,
-  padding: 10,
-  backgroundColor: '#007bff',
-  color: 'white',
+const buttonPrimary = {
+  padding: '12px 25px',
+  backgroundColor: 'white',
+  color: '#2b6cb0',
   border: 'none',
   borderRadius: 8,
+  fontSize: 16,
   cursor: 'pointer',
+};
+
+const buttonSecondary = {
+  padding: '12px 25px',
+  backgroundColor: 'transparent',
+  color: 'white',
+  border: '1px solid white',
+  borderRadius: 8,
+  fontSize: 16,
+  cursor: 'pointer',
+};
+
+const flow = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  fontSize: 14,
+  opacity: 0.9,
 };
