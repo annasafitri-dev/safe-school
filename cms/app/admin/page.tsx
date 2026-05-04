@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 export default function AdminPage() {
   const [reports, setReports] = useState<any[]>([]);
+  const [search, setSearch] = useState('');
 
   // DELETE
   const deleteReport = async (id: number) => {
@@ -55,6 +56,12 @@ export default function AdminPage() {
   const pending = reports.filter((r) => r.status === 'pending').length;
   const selesai = reports.filter((r) => r.status !== 'pending').length;
 
+  // 🔥 SEARCH FILTER
+  const filteredReports = reports.filter((r) =>
+    r.laporan.toLowerCase().includes(search.toLowerCase()) ||
+    r.nama?.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div style={{ padding: 20 }}>
       <h1>Dashboard Laporan</h1>
@@ -77,11 +84,25 @@ export default function AdminPage() {
         </div>
       </div>
 
+      {/* 🔍 SEARCH */}
+      <input
+        placeholder="Cari laporan..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        style={{
+          marginBottom: 20,
+          padding: 10,
+          width: '100%',
+          borderRadius: 8,
+          border: '1px solid #ccc',
+        }}
+      />
+
       {/* LIST */}
-      {reports.length === 0 ? (
-        <p>Belum ada laporan</p>
+      {filteredReports.length === 0 ? (
+        <p>Tidak ada laporan</p>
       ) : (
-        reports.map((r) => (
+        filteredReports.map((r) => (
           <div
             key={r.id}
             style={{
@@ -130,7 +151,7 @@ export default function AdminPage() {
   );
 }
 
-// 🔥 STYLE
+// STYLE
 const statsContainer = {
   display: 'flex',
   gap: 20,
