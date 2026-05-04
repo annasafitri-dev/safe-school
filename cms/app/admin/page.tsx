@@ -12,14 +12,10 @@ export default function AdminPage() {
         method: 'DELETE',
       });
 
-      if (!res.ok) {
-        alert('Gagal hapus');
-        return;
-      }
+      if (!res.ok) return alert('Gagal hapus');
 
       setReports((prev) => prev.filter((r) => r.id !== id));
-    } catch (err) {
-      console.error(err);
+    } catch {
       alert('Error hapus');
     }
   };
@@ -36,8 +32,7 @@ export default function AdminPage() {
       setReports((prev) =>
         prev.map((r) => (r.id === id ? updated : r))
       );
-    } catch (err) {
-      console.error(err);
+    } catch {
       alert('Gagal update status');
     }
   };
@@ -54,104 +49,144 @@ export default function AdminPage() {
   // 🔥 STATISTIK
   const total = reports.length;
   const pending = reports.filter((r) => r.status === 'pending').length;
-  const selesai = reports.filter((r) => r.status !== 'pending').length;
+  const proses = reports.filter((r) => r.status === 'proses').length;
+  const selesai = reports.filter((r) => r.status === 'selesai').length;
 
-  // 🔥 SEARCH FILTER
+  // 🔥 SEARCH
   const filteredReports = reports.filter((r) =>
     r.laporan.toLowerCase().includes(search.toLowerCase()) ||
     r.nama?.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Dashboard Laporan</h1>
-
-      {/* 🔥 STAT CARDS */}
-      <div style={statsContainer}>
-        <div style={statCard}>
-          <h3>Total</h3>
-          <p>{total}</p>
-        </div>
-
-        <div style={statCard}>
-          <h3>Pending</h3>
-          <p>{pending}</p>
-        </div>
-
-        <div style={statCard}>
-          <h3>Selesai</h3>
-          <p>{selesai}</p>
-        </div>
+    <div>
+      {/* NAVBAR */}
+      <div style={navbar}>
+        <h2>AduinAja! Admin</h2>
+        <button style={logoutBtn}>Logout</button>
       </div>
 
-      {/* 🔍 SEARCH */}
-      <input
-        placeholder="Cari laporan..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        style={{
-          marginBottom: 20,
-          padding: 10,
-          width: '100%',
-          borderRadius: 8,
-          border: '1px solid #ccc',
-        }}
-      />
+      {/* CONTENT */}
+      <div style={container}>
+        <h1>Dashboard Laporan</h1>
 
-      {/* LIST */}
-      {filteredReports.length === 0 ? (
-        <p>Tidak ada laporan</p>
-      ) : (
-        filteredReports.map((r) => (
-          <div
-            key={r.id}
-            style={{
-              border: '1px solid #ccc',
-              borderRadius: 10,
-              marginBottom: 15,
-              padding: 15,
-              backgroundColor: '#f9f9f9',
-            }}
-          >
-            <p><b>Nama:</b> {r.nama}</p>
-            <p><b>Pelaku:</b> {r.pelaku || '-'}</p>
-            <p><b>Laporan:</b> {r.laporan}</p>
-
-            <p>
-              <b>Status:</b>{' '}
-              <span
-                style={{
-                  color: r.status === 'pending' ? 'orange' : 'green',
-                  fontWeight: 'bold',
-                }}
-              >
-                {r.status}
-              </span>
-            </p>
-
-            <div style={{ marginTop: 10 }}>
-              <button
-                onClick={() => updateStatus(r.id)}
-                style={btnPrimary}
-              >
-                Ubah Status
-              </button>
-
-              <button
-                onClick={() => deleteReport(r.id)}
-                style={btnDanger}
-              >
-                Hapus
-              </button>
-            </div>
+        {/* STAT */}
+        <div style={statsContainer}>
+          <div style={statCard}>
+            <h3>Total</h3>
+            <p>{total}</p>
           </div>
-        ))
-      )}
+
+          <div style={statCard}>
+            <h3>Pending</h3>
+            <p>{pending}</p>
+          </div>
+
+          <div style={statCard}>
+            <h3>Proses</h3>
+            <p>{proses}</p>
+          </div>
+
+          <div style={statCard}>
+            <h3>Selesai</h3>
+            <p>{selesai}</p>
+          </div>
+        </div>
+
+        {/* SEARCH */}
+        <input
+          placeholder="Cari laporan..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          style={searchInput}
+        />
+
+        {/* LIST */}
+        {filteredReports.length === 0 ? (
+          <p>Tidak ada laporan</p>
+        ) : (
+          filteredReports.map((r) => (
+            <div key={r.id} style={card}>
+              <p><b>Nama:</b> {r.nama}</p>
+              <p><b>Pelaku:</b> {r.pelaku || '-'}</p>
+              <p><b>Laporan:</b> {r.laporan}</p>
+
+              {/* 🔥 GAMBAR BUKTI */}
+              {r.bukti && (
+                <img
+                  src={`http://127.0.0.1:3000/${r.bukti}`}
+                  alt="bukti"
+                  style={image}
+                />
+              )}
+
+              {/* STATUS */}
+              <p>
+                <b>Status:</b>{' '}
+                <span
+                  style={{
+                    color:
+                      r.status === 'pending'
+                        ? '#f59e0b'
+                        : r.status === 'proses'
+                        ? '#3b82f6'
+                        : '#16a34a',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {r.status}
+                </span>
+              </p>
+
+              {/* BUTTON */}
+              <div style={{ marginTop: 10 }}>
+                <button
+                  onClick={() => updateStatus(r.id)}
+                  style={btnPrimary}
+                >
+                  Ubah Status
+                </button>
+
+                <button
+                  onClick={() => deleteReport(r.id)}
+                  style={btnDanger}
+                >
+                  Hapus
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 }
 
-// STYLE
+// 🔥 STYLE
+const navbar = {
+  backgroundColor: '#1e3a8a',
+  color: 'white',
+  padding: '15px 30px',
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+};
+
+const logoutBtn = {
+  backgroundColor: 'white',
+  color: '#1e3a8a',
+  border: 'none',
+  padding: '6px 12px',
+  borderRadius: 6,
+  cursor: 'pointer',
+};
+
+const container = {
+  maxWidth: 900,
+  margin: '30px auto',
+  padding: 20,
+};
+
 const statsContainer = {
   display: 'flex',
   gap: 20,
@@ -160,17 +195,42 @@ const statsContainer = {
 
 const statCard = {
   flex: 1,
-  background: '#2b6cb0',
+  background: '#3b82f6',
   color: 'white',
   padding: 15,
   borderRadius: 10,
   textAlign: 'center' as const,
 };
 
+const searchInput = {
+  marginBottom: 20,
+  padding: 10,
+  width: '100%',
+  borderRadius: 8,
+  border: '1px solid #ccc',
+};
+
+const card = {
+  border: '1px solid #e5e7eb',
+  borderRadius: 10,
+  marginBottom: 15,
+  padding: 15,
+  backgroundColor: 'white',
+  boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
+};
+
+const image = {
+  width: '100%',
+  maxHeight: 200,
+  objectFit: 'cover' as const,
+  marginTop: 10,
+  borderRadius: 8,
+};
+
 const btnPrimary = {
   marginRight: 10,
-  padding: '5px 10px',
-  backgroundColor: '#2b6cb0',
+  padding: '6px 12px',
+  backgroundColor: '#2563eb',
   color: 'white',
   border: 'none',
   borderRadius: 5,
@@ -178,8 +238,8 @@ const btnPrimary = {
 };
 
 const btnDanger = {
-  padding: '5px 10px',
-  backgroundColor: 'red',
+  padding: '6px 12px',
+  backgroundColor: '#dc2626',
   color: 'white',
   border: 'none',
   borderRadius: 5,
