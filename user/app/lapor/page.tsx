@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 
-export default function Home() {
+export default function Lapor() {
   const [nama, setNama] = useState('');
   const [laporan, setLaporan] = useState('');
   const [lokasi, setLokasi] = useState('');
@@ -28,15 +28,14 @@ export default function Home() {
 
       if (!res.ok) throw new Error();
 
-      alert('✅ Laporan berhasil dikirim!');
+      alert('Laporan berhasil dikirim');
       setNama('');
       setLaporan('');
       setLokasi('');
       setKategori('');
       setBukti(null);
-    } catch (err) {
-      console.error(err);
-      alert('❌ Gagal kirim laporan');
+    } catch {
+      alert('Gagal kirim laporan');
     } finally {
       setLoading(false);
     }
@@ -44,16 +43,15 @@ export default function Home() {
 
   return (
     <div style={container}>
-      <div style={card}>
-        
-        {/* 🔵 HERO */}
-        <h1 style={title}>AduinAja!</h1>
+      <div style={content}>
+
+        <h1 style={title}>Buat Laporan</h1>
         <p style={subtitle}>
-          Sampaikan laporan di sekitar kamu dengan mudah dan aman
+          Isi form di bawah untuk menyampaikan laporan Anda
         </p>
 
-        <form onSubmit={handleSubmit}>
-          
+        <form onSubmit={handleSubmit} style={form}>
+
           <input
             placeholder="Nama (opsional)"
             value={nama}
@@ -65,7 +63,7 @@ export default function Home() {
             placeholder="Tulis laporan..."
             value={laporan}
             onChange={(e) => setLaporan(e.target.value)}
-            style={{ ...input, height: 100 }}
+            style={{ ...input, height: 120 }}
           />
 
           <input
@@ -93,17 +91,10 @@ export default function Home() {
           />
 
           <button type="submit" disabled={loading} style={button}>
-            {loading ? 'Mengirim...' : '🚀 Kirim Laporan'}
+            {loading ? 'Mengirim...' : 'Kirim Laporan'}
           </button>
-        </form>
 
-        {/* 🔽 FLOW (biar keliatan pro) */}
-        <div style={flow}>
-          <p>📩 Kirim laporan</p>
-          <p>🔍 Dicek admin</p>
-          <p>⚙️ Diproses</p>
-          <p>✅ Selesai</p>
-        </div>
+        </form>
 
       </div>
     </div>
@@ -115,52 +106,48 @@ const container = {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  background: 'linear-gradient(135deg, #4facfe, #00c6ff)', // 🔵 biru
+  background: '#f5f7fa', // beda dikit dari landing biar kontras
 };
 
-const card = {
+const content = {
+  width: '100%',
+  maxWidth: 600, // 🔥 lebih besar dari sebelumnya
   background: 'white',
-  padding: 25,
+  padding: 30,
   borderRadius: 12,
-  width: 400,
-  boxShadow: '0 8px 20px rgba(0,0,0,0.1)', // 🔥 biar ga polos
+  boxShadow: '0 8px 20px rgba(0,0,0,0.1)',
 };
 
 const title = {
-  textAlign: 'center' as const,
-  color: '#2b6cb0',
+  fontSize: 28,
+  marginBottom: 5,
 };
 
 const subtitle = {
-  textAlign: 'center' as const,
-  fontSize: 14,
-  marginBottom: 15,
+  marginBottom: 20,
   color: '#666',
 };
 
+const form = {
+  display: 'flex',
+  flexDirection: 'column' as const,
+};
+
 const input = {
-  width: '100%',
-  padding: 10,
   marginTop: 10,
+  padding: 12,
   borderRadius: 8,
   border: '1px solid #ccc',
+  fontSize: 14,
 };
 
 const button = {
-  width: '100%',
   marginTop: 15,
-  padding: 10,
+  padding: 12,
   backgroundColor: '#2b6cb0',
   color: 'white',
   border: 'none',
   borderRadius: 8,
+  fontSize: 16,
   cursor: 'pointer',
-};
-
-const flow = {
-  marginTop: 20,
-  fontSize: 13,
-  color: '#555',
-  display: 'flex',
-  justifyContent: 'space-between',
 };
