@@ -41,20 +41,43 @@ export default function AdminPage() {
     }
   };
 
-  // GET DATA (🔥 FIX DI SINI)
+  // GET DATA
   useEffect(() => {
     fetch('http://127.0.0.1:3000/reports')
       .then((res) => res.json())
       .then((data) => {
-        // 🔥 HANDLE kalau bukan array
         setReports(Array.isArray(data) ? data : data.data || []);
       });
   }, []);
+
+  // 🔥 STATISTIK
+  const total = reports.length;
+  const pending = reports.filter((r) => r.status === 'pending').length;
+  const selesai = reports.filter((r) => r.status !== 'pending').length;
 
   return (
     <div style={{ padding: 20 }}>
       <h1>Dashboard Laporan</h1>
 
+      {/* 🔥 STAT CARDS */}
+      <div style={statsContainer}>
+        <div style={statCard}>
+          <h3>Total</h3>
+          <p>{total}</p>
+        </div>
+
+        <div style={statCard}>
+          <h3>Pending</h3>
+          <p>{pending}</p>
+        </div>
+
+        <div style={statCard}>
+          <h3>Selesai</h3>
+          <p>{selesai}</p>
+        </div>
+      </div>
+
+      {/* LIST */}
       {reports.length === 0 ? (
         <p>Belum ada laporan</p>
       ) : (
@@ -73,7 +96,6 @@ export default function AdminPage() {
             <p><b>Pelaku:</b> {r.pelaku || '-'}</p>
             <p><b>Laporan:</b> {r.laporan}</p>
 
-            {/* STATUS */}
             <p>
               <b>Status:</b>{' '}
               <span
@@ -86,33 +108,17 @@ export default function AdminPage() {
               </span>
             </p>
 
-            {/* BUTTON */}
             <div style={{ marginTop: 10 }}>
               <button
                 onClick={() => updateStatus(r.id)}
-                style={{
-                  marginRight: 10,
-                  padding: '5px 10px',
-                  backgroundColor: '#007bff',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: 5,
-                  cursor: 'pointer',
-                }}
+                style={btnPrimary}
               >
                 Ubah Status
               </button>
 
               <button
                 onClick={() => deleteReport(r.id)}
-                style={{
-                  padding: '5px 10px',
-                  backgroundColor: 'red',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: 5,
-                  cursor: 'pointer',
-                }}
+                style={btnDanger}
               >
                 Hapus
               </button>
@@ -123,3 +129,38 @@ export default function AdminPage() {
     </div>
   );
 }
+
+// 🔥 STYLE
+const statsContainer = {
+  display: 'flex',
+  gap: 20,
+  marginBottom: 20,
+};
+
+const statCard = {
+  flex: 1,
+  background: '#2b6cb0',
+  color: 'white',
+  padding: 15,
+  borderRadius: 10,
+  textAlign: 'center' as const,
+};
+
+const btnPrimary = {
+  marginRight: 10,
+  padding: '5px 10px',
+  backgroundColor: '#2b6cb0',
+  color: 'white',
+  border: 'none',
+  borderRadius: 5,
+  cursor: 'pointer',
+};
+
+const btnDanger = {
+  padding: '5px 10px',
+  backgroundColor: 'red',
+  color: 'white',
+  border: 'none',
+  borderRadius: 5,
+  cursor: 'pointer',
+};
