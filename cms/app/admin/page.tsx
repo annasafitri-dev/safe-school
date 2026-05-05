@@ -1,9 +1,19 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function AdminPage() {
   const [reports, setReports] = useState<any[]>([]);
   const [search, setSearch] = useState('');
+  const router = useRouter();
+
+  // 🔥 CEK LOGIN
+  useEffect(() => {
+    const isLogin = localStorage.getItem('admin');
+    if (!isLogin) {
+      router.push('/login');
+    }
+  }, []);
 
   // DELETE
   const deleteReport = async (id: number) => {
@@ -46,24 +56,32 @@ export default function AdminPage() {
       });
   }, []);
 
-  // 🔥 STATISTIK
+  // STAT
   const total = reports.length;
   const pending = reports.filter((r) => r.status === 'pending').length;
   const proses = reports.filter((r) => r.status === 'proses').length;
   const selesai = reports.filter((r) => r.status === 'selesai').length;
 
-  // 🔥 SEARCH
+  // SEARCH
   const filteredReports = reports.filter((r) =>
     r.laporan.toLowerCase().includes(search.toLowerCase()) ||
     r.nama?.toLowerCase().includes(search.toLowerCase())
   );
+
+  // 🔥 LOGOUT FUNCTION
+  const handleLogout = () => {
+    localStorage.removeItem('admin');
+    router.push('/login');
+  };
 
   return (
     <div>
       {/* NAVBAR */}
       <div style={navbar}>
         <h2>AduinAja! Admin</h2>
-        <button style={logoutBtn}>Logout</button>
+        <button style={logoutBtn} onClick={handleLogout}>
+          Logout
+        </button>
       </div>
 
       {/* CONTENT */}
@@ -111,16 +129,13 @@ export default function AdminPage() {
               <p><b>Pelaku:</b> {r.pelaku || '-'}</p>
               <p><b>Laporan:</b> {r.laporan}</p>
 
-              {/* 🔥 GAMBAR BUKTI */}
               {r.bukti && (
                 <img
                   src={`http://127.0.0.1:3000/${r.bukti}`}
-                  alt="bukti"
                   style={image}
                 />
               )}
 
-              {/* STATUS */}
               <p>
                 <b>Status:</b>{' '}
                 <span
@@ -138,7 +153,6 @@ export default function AdminPage() {
                 </span>
               </p>
 
-              {/* BUTTON */}
               <div style={{ marginTop: 10 }}>
                 <button
                   onClick={() => updateStatus(r.id)}
@@ -162,7 +176,7 @@ export default function AdminPage() {
   );
 }
 
-// 🔥 STYLE
+// STYLE
 const navbar = {
   backgroundColor: '#1e3a8a',
   color: 'white',
